@@ -106,7 +106,7 @@ void freelab(labyrinthe lab,unsigned largeur);
 
 labyrinthe genererLabyrinthe(int lignes,int colonnes,int T);
 
-void copier_chemin(chemin_t src,chemin_t *dst,int taille_chemins);
+void copier_chemin(chemin_t src,chemin_t *dst);
 void invChemin(chemin_t *ch);
 void xch_coord(coordonnee_t *coord1,coordonnee_t *coord2);
 

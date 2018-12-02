@@ -143,27 +143,31 @@ int main(){
 
 //generation aléatoire
   coordonnee_t depart = {0,0}; 
-  //labyrinthe lab = genererLabyrinthe(LIGNES,COLLONNES,TEMP);
-  labyrinthe lab = allouerMatrice(LIGNES,COLLONNES);
-  for(int i=0;i<LIGNES;i++){
-    for(int j=0;j<LIGNES;j++){
-      lab[i][j] = 0;
-    }
-  }
+  labyrinthe lab = genererLabyrinthe(LIGNES,COLLONNES,TEMP);
+ //labyrinthe lab = allouerMatrice(LIGNES,COLLONNES);
+  // for(int i=0;i<LIGNES;i++){
+  //   for(int j=0;j<LIGNES;j++){
+  //     lab[i][j] = 0;
+  //   }
+  // }
 
-  lab[3][1] = 2;
+  // lab[LIGNES-1][1] = 2;
   labyrinthe M2 = allouerMatrice(LIGNES,COLLONNES);
   afficherMatrice(lab,LIGNES,COLLONNES);
   printf("\nTest tout plus cours chemin:\n");
   chemin_t *chs = tousPlusCourtsChemins(lab,M2,LIGNES,COLLONNES,depart);
   printf("chemins :\n");
-  int i=0;
-  while(i<LIGNES*COLLONNES){
-    printf("%d->",i);
-    afficherChemin(chs[i]);
+  for(int i=0;i<LIGNES*COLLONNES;i++){
     free(chs[i].coordonnees);
-    i++;
-  }free(chs);
+  }
+  free(chs);
+  // int i=0;
+  // while(i<LIGNES*COLLONNES){
+  //   printf("%d->",i);
+  //   afficherChemin(chs[i]);
+  //   free(chs[i].coordonnees);
+  //   i++;
+  // }free(chs);
 
   
 //   chemin_t ch1;
@@ -200,7 +204,7 @@ int main(){
 // printf("pile(tete:%d,queue:%d):\n",pile.tete,pile.queue);
 // printf("chemin 3:\n");
 // afficherChemin(ch3);
-  
+
 
 
 

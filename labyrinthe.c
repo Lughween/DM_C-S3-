@@ -254,7 +254,6 @@ coordonnee_t suivre_chemin(labyrinthe M2,unsigned int largeur, unsigned int long
       k = pos.colonne +j;
       if(l >= 0 && k<longueur && k >= 0 && l<largeur /*&& i != 0 && j != 0*/){
         if(M2[l][k] == M2[pos.ligne][pos.colonne] - 1){
-          //printf("(%d;%d)%d(%d,%d)\n",pos.ligne,pos.colonne,M2[l][k],l,k);
           coord.colonne = k;
           coord.ligne =l;
           return coord;
@@ -327,19 +326,21 @@ chemin_t plusCourtCheminDynamique (labyrinthe lab, labyrinthe M2, unsigned int l
   return ch;
 }
 
-void copier_chemin(chemin_t src,chemin_t *dst,int taille_chemins){
+void copier_chemin(chemin_t src,chemin_t *dst){
   dst->taille = src.taille;
   dst->coordonnees = malloc(dst->taille*sizeof(coordonnee_t));
+  // else
+  //   dst->coordonnees = realloc(dst->coordonnees,dst->taille*sizeof(coordonnee_t));
   for(int i=0;i<src.taille;i++){
     dst->coordonnees[i] = src.coordonnees[i];
   }
 }
 //
-creer_ajouter_ch_a_pile(chemin_t origine,cheminPile_t *p,coordonnee_t derPos,int taille_chemins){
+creer_ajouter_ch_a_pile(chemin_t origine,cheminPile_t *p,coordonnee_t derPos){
   chemin_t ch;
   ch.taille = origine.taille;
   //ch.coordonnees = malloc(ch.taille*sizeof(coordonnee_t));
-  copier_chemin(origine,&ch,taille_chemins);
+  copier_chemin(origine,&ch);
   ch.taille++;
   ch.coordonnees[ch.taille-1] = derPos;
   empiler_ch(p,ch);
@@ -365,7 +366,7 @@ coordonnee_t suivre_chemins_multiples(labyrinthe M2,unsigned int largeur, unsign
                 //-> créer un nouveaux chemins indentique à celui là puis l'ajouter à pile
             coord_nv_ch.ligne = l;
             coord_nv_ch.colonne =k;
-            creer_ajouter_ch_a_pile(chemin_suivi,p,coord_nv_ch,taille_chemins);
+            creer_ajouter_ch_a_pile(chemin_suivi,p,coord_nv_ch);
         }
         }
      }
@@ -373,11 +374,11 @@ coordonnee_t suivre_chemins_multiples(labyrinthe M2,unsigned int largeur, unsign
   }
   return coord;
 }
-void ajouter_chemins(chemin_t *tab_chemins,chemin_t ch,int nv_taille,int taille_max){
+void ajouter_chemins(chemin_t *tab_chemins,chemin_t ch,int nv_taille){
   // tab_chemins = realloc(tab_chemins,nv_taille*sizeof(chemin_t));
   // if(tab_chemins == NULL)
   //   {printf("ERR REALLOC \n");}
-  copier_chemin(ch,&tab_chemins[nv_taille-1],taille_max);
+  copier_chemin(ch,&tab_chemins[nv_taille-1]);
 }
 
 
@@ -391,27 +392,31 @@ chemin_t* tousPlusCourtsChemins(labyrinthe lab, labyrinthe M2, unsigned int larg
   if(lab[pos.ligne][pos.colonne] != 2){ //cas où le labyrinthe est imposible
     ch = malloc(sizeof(chemin_t));
     ch->taille = 0;
-    ch->coordonnees = calloc(1,sizeof(coordonnee_t));
+    ch->coordonnees = malloc(sizeof(coordonnee_t));
     puts("labyrinthe impossible !!");}
   else
   {
     coordonnee_t coord_act = {pos.ligne,pos.colonne};
-    ch = calloc(longueur*largeur,sizeof(chemin_t));
+    ch = malloc(largeur*largeur*sizeof(chemin_t));
     int taille_chemins= M2[coord_act.colonne][coord_act.colonne]+1;
     chemin_t principal;
     principal.taille = 1;
-    principal.coordonnees = malloc(taille_chemins*sizeof(coordonnee_t));
+    principal.coordonnees = malloc(sizeof(coordonnee_t));
     principal.coordonnees[0] = coord_act;
     int indice_chemin_actuel = 0;
     empiler_ch(&pile,principal); //ajoute le premier chemin à la pile
+    free(principal.coordonnees);
     while(!pile_vide_ch(pile)){
-      ajouter_chemins(ch,depiler_ch(&pile),indice_chemin_actuel+1,taille_chemins);
+      ajouter_chemins(ch,depiler_ch(&pile),indice_chemin_actuel+1);
       nb_chemin++;
       int i =ch[indice_chemin_actuel].taille;
       coord_act = ch[indice_chemin_actuel].coordonnees[ch[indice_chemin_actuel].taille-1];
       while(M2[coord_act.ligne][coord_act.ligne] != 0){
         coord_act = suivre_chemins_multiples(M2,largeur,longueur,coord_act,&pile,ch[indice_chemin_actuel],taille_chemins);
         ch[indice_chemin_actuel].coordonnees = realloc(ch[indice_chemin_actuel].coordonnees,(ch[indice_chemin_actuel].taille+1)*sizeof(chemin_t));
+        if(ch[indice_chemin_actuel].coordonnees == NULL){
+          printf("Err reallocMem\n");
+        }
         ch[indice_chemin_actuel].coordonnees[i] = coord_act;
         ch[indice_chemin_actuel].taille++;
         i++;}
