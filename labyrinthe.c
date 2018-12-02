@@ -3,11 +3,11 @@
 #include "labyrinthe.h"
 #include <time.h>
 
-typedef struct cheminPile{
-  int tete;
-  int queue;
-  chemin_t* pile;
-}cheminPile_t;
+// typedef struct cheminPile{
+//   int tete;
+//   int queue;
+//   chemin_t* pile;
+// }cheminPile_t;
 /*Premiere partie*/
 
 int rand_a_b(int a,int b){
@@ -49,26 +49,22 @@ int rand_a_b(int a,int b){
 
 
 /*********************pile fifo de chemin**********************************/
-void init_pile_ch(cheminPile_t *p,int largeur,int longueur){
-  p->queue = -1;
-  p->tete = -1;
-  p->pile = malloc(largeur*longueur*sizeof(coordonnee_t));
+void init_pile_ch(cheminPile_t *p){
+  p->queue = 0;
+  p->tete = 0;
+  p->pile = malloc(sizeof(chemin_t));
 }
 
 char pile_vide_ch(cheminPile_t p){ //retourne 1 si vide 0 sinon
-  if(p.queue == -1 || p.tete == -1)
+  if(p.queue == p.tete)
     return 1;
   return 0;
 }
 
 chemin_t depiler_ch(cheminPile_t *p){
-  if(!pile_vide(*p)){
-    if(p->queue < p->tete)
-      return p->pile[p->queue++];
-    int q = p->queue;
-    p->queue = -1;
-    p->tete = -1;
-    return p->pile[q];
+  if(!pile_vide_ch(*p)){
+    p->queue++;
+    return p->pile[p->queue-1];
   }
   else{
     printf("pile vide !\n");
@@ -78,13 +74,14 @@ chemin_t depiler_ch(cheminPile_t *p){
   }
 }
 
-void empiler_ch(pileCoord_t *p,chemin_t ch){
-  p->tete++;
+void empiler_ch(cheminPile_t *p,chemin_t ch){
+  p->pile = realloc(p->pile,(p->tete+1)*sizeof(chemin_t));
+  if(p->pile == NULL){
+    printf("errAlocation \n");
+  }
   p->pile[p->tete] = ch;
-  if(pile_vide(*p))
-    p->queue = 0;
+  p->tete++;
 }
-
 
 labyrinthe genererLabyrinthe(int lignes,int collones,int T){
   labyrinthe lab = calloc(lignes,sizeof(char*));
@@ -267,7 +264,23 @@ coordonnee_t suivre_chemin(labyrinthe M2,unsigned int largeur, unsigned int long
   }
 }
 
+void xch_coord(coordonnee_t *coord1,coordonnee_t *coord2){
+  coordonnee_t tmp;
+  tmp = *coord1;
+  *coord1 = *coord2;
+  *coord2 = tmp;
+  
+}
 
+void invChemin(chemin_t *ch){
+  int i=0;
+  int j=ch->taille-1;
+  while(i < j){
+    xch_coord(&ch->coordonnees[i],&ch->coordonnees[j]);
+    i++;
+    j--;
+  }
+}
 coordonnee_t CreerM2(labyrinthe lab, labyrinthe M2, unsigned int largeur, unsigned int longueur, coordonnee_t depart){
   initMatAnnexe(M2,largeur,longueur);
   M2[depart.ligne][depart.colonne] = 0;
@@ -291,9 +304,9 @@ coordonnee_t CreerM2(labyrinthe lab, labyrinthe M2, unsigned int largeur, unsign
   free(pile.pile);
   return pos;
 }
+
 chemin_t plusCourtCheminDynamique (labyrinthe lab, labyrinthe M2, unsigned int largeur, unsigned int longueur, coordonnee_t depart){
   chemin_t ch;
-  //printf("(%d;%d)\n",pos.ligne,pos.colonne); 
   coordonnee_t pos = CreerM2(lab,M2,largeur,longueur,depart);
   if(lab[pos.ligne][pos.colonne] != 2){
     ch.taille = 0;
@@ -303,50 +316,114 @@ chemin_t plusCourtCheminDynamique (labyrinthe lab, labyrinthe M2, unsigned int l
     ch.taille = M2[pos.ligne][pos.colonne]+1;
     ch.coordonnees = malloc(ch.taille*sizeof(coordonnee_t));
     ch.coordonnees[ch.taille-1] = pos;
-   for(int i=ch.taille-2;i>=0;i--){
+   for(int i=ch.taille-2;i>=0;i--){ // on connait la taille du chemin gràce à la valeur de la case de M2.
     pos = suivre_chemin(M2,largeur,longueur,pos);
     ch.coordonnees[i] = pos;
     }
   }
   afficherMatrice(M2,largeur,longueur);
+  freelab(lab,largeur);
+  freelab(M2,largeur);
   return ch;
 }
 
-void suivre_plusieurs_chemins(labyrinthe M2,unsigned int largeur, unsigned int longueur,coordonnee_t pos,chemin_t* chemins,){
+void copier_chemin(chemin_t src,chemin_t *dst,int taille_chemins){
+  dst->taille = src.taille;
+  dst->coordonnees = malloc(dst->taille*sizeof(coordonnee_t));
+  for(int i=0;i<src.taille;i++){
+    dst->coordonnees[i] = src.coordonnees[i];
+  }
+}
+//
+creer_ajouter_ch_a_pile(chemin_t origine,cheminPile_t *p,coordonnee_t derPos,int taille_chemins){
+  chemin_t ch;
+  ch.taille = origine.taille;
+  //ch.coordonnees = malloc(ch.taille*sizeof(coordonnee_t));
+  copier_chemin(origine,&ch,taille_chemins);
+  ch.taille++;
+  ch.coordonnees[ch.taille-1] = derPos;
+  empiler_ch(p,ch);
+  
+} 
+
+coordonnee_t suivre_chemins_multiples(labyrinthe M2,unsigned int largeur, unsigned int longueur,coordonnee_t pos,cheminPile_t *p,chemin_t chemin_suivi,int taille_chemins){
   int l,k;
+  int nb_possible =0;
+  coordonnee_t coord;
+  coordonnee_t coord_nv_ch;
   for(int i=-1;i<2;i++){
     for(int j=-1;j<2;j++){
       l = pos.ligne +i;
       k = pos.colonne +j;
       if(l >= 0 && k<longueur && k >= 0 && l<largeur /*&& i != 0 && j != 0*/){
-        if(M2[l][k] == M2[pos.ligne][pos.colonne] - 1){
-          
-         }
+        if(M2[l][k] == M2[pos.ligne][pos.colonne] - 1){ 
+          if(nb_possible == 0){//cas où c'est la première coord -> retourner ce chemin
+            coord.colonne = k;
+            coord.ligne =l;
+            nb_possible++;
+          }else{ // cas où ce n'est pas la première coord possible 
+                //-> créer un nouveaux chemins indentique à celui là puis l'ajouter à pile
+            coord_nv_ch.ligne = l;
+            coord_nv_ch.colonne =k;
+            creer_ajouter_ch_a_pile(chemin_suivi,p,coord_nv_ch,taille_chemins);
+        }
+        }
      }
     }
   }
+  return coord;
+}
+void ajouter_chemins(chemin_t *tab_chemins,chemin_t ch,int nv_taille,int taille_max){
+  // tab_chemins = realloc(tab_chemins,nv_taille*sizeof(chemin_t));
+  // if(tab_chemins == NULL)
+  //   {printf("ERR REALLOC \n");}
+  copier_chemin(ch,&tab_chemins[nv_taille-1],taille_max);
 }
 
 
 chemin_t* tousPlusCourtsChemins(labyrinthe lab, labyrinthe M2, unsigned int largeur, unsigned int longueur, coordonnee_t depart){
   chemin_t *ch;
+  int nb_chemin = 0;
   cheminPile_t pile;
+  init_pile_ch(&pile);
   coordonnee_t pos = CreerM2(lab,M2,largeur,longueur,depart);
+  afficherMatrice(M2,largeur,longueur);
   if(lab[pos.ligne][pos.colonne] != 2){ //cas où le labyrinthe est imposible
     ch = malloc(sizeof(chemin_t));
     ch->taille = 0;
     ch->coordonnees = calloc(1,sizeof(coordonnee_t));
     puts("labyrinthe impossible !!");}
-  else{
-    ch = malloc(sizeof(chemin_t));
-    ch->taille = M2[pos.ligne][pos.colonne]+1;
-    ch->coordonnees = malloc(ch.taille*sizeof(coordonnee_t)); 
-    ch.coordonnees[ch.taille-1] = pos;
-   for(int i=ch.taille-2;i>=0;i--){
-    pos = suivre_chemin(M2,largeur,longueur,pos);
-    ch.coordonnees[i] = pos;
+  else
+  {
+    coordonnee_t coord_act = {pos.ligne,pos.colonne};
+    ch = calloc(longueur*largeur,sizeof(chemin_t));
+    int taille_chemins= M2[coord_act.colonne][coord_act.colonne]+1;
+    chemin_t principal;
+    principal.taille = 1;
+    principal.coordonnees = malloc(taille_chemins*sizeof(coordonnee_t));
+    principal.coordonnees[0] = coord_act;
+    int indice_chemin_actuel = 0;
+    empiler_ch(&pile,principal); //ajoute le premier chemin à la pile
+    while(!pile_vide_ch(pile)){
+      ajouter_chemins(ch,depiler_ch(&pile),indice_chemin_actuel+1,taille_chemins);
+      nb_chemin++;
+      int i =ch[indice_chemin_actuel].taille;
+      coord_act = ch[indice_chemin_actuel].coordonnees[ch[indice_chemin_actuel].taille-1];
+      while(M2[coord_act.ligne][coord_act.ligne] != 0){
+        coord_act = suivre_chemins_multiples(M2,largeur,longueur,coord_act,&pile,ch[indice_chemin_actuel],taille_chemins);
+        ch[indice_chemin_actuel].coordonnees = realloc(ch[indice_chemin_actuel].coordonnees,(ch[indice_chemin_actuel].taille+1)*sizeof(chemin_t));
+        ch[indice_chemin_actuel].coordonnees[i] = coord_act;
+        ch[indice_chemin_actuel].taille++;
+        i++;}
+      indice_chemin_actuel++;
     }
   }
+  for(int j=0;j<nb_chemin;j++){
+    invChemin(&ch[j]);
+  }
+  free(pile.pile);
+  freelab(lab,largeur);
+  freelab(M2,largeur);
   return ch;
 }
 

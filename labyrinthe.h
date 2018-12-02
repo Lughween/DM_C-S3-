@@ -35,6 +35,12 @@ typedef struct CHEMIN {
   int taille;
 } chemin_t;
 
+typedef struct cheminPile{
+  int tete;
+  int queue;
+  chemin_t* pile;
+}cheminPile_t;
+
 /* Declaration des fonctions */
 
 //La fonction creerMatrice prend en parametre une matrice creuse
@@ -99,3 +105,12 @@ labyrinthe allouerMatrice(unsigned int lignes,unsigned int colonne);
 void freelab(labyrinthe lab,unsigned largeur);
 
 labyrinthe genererLabyrinthe(int lignes,int colonnes,int T);
+
+void copier_chemin(chemin_t src,chemin_t *dst,int taille_chemins);
+void invChemin(chemin_t *ch);
+void xch_coord(coordonnee_t *coord1,coordonnee_t *coord2);
+
+void init_pile_ch(cheminPile_t *p);
+char pile_vide_ch(cheminPile_t p);
+chemin_t depiler_ch(cheminPile_t *p);
+void empiler_ch(cheminPile_t *p,chemin_t ch);

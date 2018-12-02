@@ -1,108 +1,109 @@
 #include "labyrinthe.h"
 #include "test_matrices.h"
 
-#define LIGNES 5
-#define COLLONNES 5
+#define LIGNES 4
+#define COLLONNES 4
+
 #define TEMP 0
 
 int main(){
   /* Tests de la création et affichage de matrices */
-//   labyrinthe lab1,lab2,lab3;
+  // labyrinthe lab1,lab2,lab3;
 
-//   // test1
-//   lab1 = creerMatrice(4,4, testA1, testIA1, testJA1);
-//   printf("\nLabyrinthe créé:");
-//   afficherMatrice(lab1,4,4);
-//   printf("\nMatrice attendue:");
-//   printf("\n%s",strMat1());
+  // // test1
+  // lab1 = creerMatrice(4,4, testA1, testIA1, testJA1);
+  // printf("\nLabyrinthe créé:");
+  // afficherMatrice(lab1,4,4);
+  // printf("\nMatrice attendue:");
+  // printf("\n%s",strMat1());
 
-//   //test2
-//   lab2 = creerMatrice(10,10, testA2, testIA2, testJA2);
-//   printf("\nLabyrinthe créé:\n");
-//   afficherMatrice(lab2,10,10);
-//   printf("\nMatrice attendue:");
-//   printf("\n%s",strMat2());
+  // //test2
+  // lab2 = creerMatrice(10,10, testA2, testIA2, testJA2);
+  // printf("\nLabyrinthe créé:\n");
+  // afficherMatrice(lab2,10,10);
+  // printf("\nMatrice attendue:");
+  // printf("\n%s",strMat2());
 
-//   //test3
-//   lab3 = creerMatrice(10,10, testA3, testIA3, testJA3);
-//   printf("\nLabyrinthe créé\n");
-//   afficherMatrice(lab3,10,10);
-//   printf("\nMatrice attendue:");
-//   printf("\n%s",strMat3());
+  // //test3
+  // lab3 = creerMatrice(10,10, testA3, testIA3, testJA3);
+  // printf("\nLabyrinthe créé\n");
+  // afficherMatrice(lab3,10,10);
+  // printf("\nMatrice attendue:");
+  // printf("\n%s",strMat3());
 
-//   /* Tests de la vérification et de l'affichage des chemins */
+  // /* Tests de la vérification et de l'affichage des chemins */
 
-//   coordonnee_t * coords = (coordonnee_t*) malloc(100*sizeof(coordonnee_t));
-//   coordonnee_t coord;
+  // coordonnee_t * coords = (coordonnee_t*) malloc(100*sizeof(coordonnee_t));
+  // coordonnee_t coord;
 
-//   coord.ligne=0;
-//   coord.colonne=0;
-//   coords[0]=coord;
+  // coord.ligne=0;
+  // coord.colonne=0;
+  // coords[0]=coord;
 
-//   coord.ligne=1;
-//   coord.colonne=1;
-//   coords[1]=coord;
+  // coord.ligne=1;
+  // coord.colonne=1;
+  // coords[1]=coord;
 
-//   coord.ligne=2;
-//   coord.colonne=0;
-//   coords[2]=coord;
+  // coord.ligne=2;
+  // coord.colonne=0;
+  // coords[2]=coord;
   
-//   coord.ligne=3;
-//   coord.colonne=0;
-//   coords[3]=coord;
-
-  
-//   chemin_t ch1;
-//   ch1.coordonnees=coords;
-//   ch1.taille=4;
-
-//   coord.ligne=0;
-//   coord.colonne=0;
-
-//   printf("\nTests chemins sur la matrice:\n");
-//   afficherMatrice(lab1,4,4);
-//   printf("\nChemin:");
-//   afficherChemin(ch1);
-//   printf("\nverification chemin valide: %d", verifierChemin(ch1,lab1,4,4,coord));
-//   printf("\nvaleur attendue: 1\n");
-  
-//   coord.colonne = 1;
-//   coords[0]=coord;
-
-//   coord.colonne = 2;
-//   coords[1]=coord;
-//   ch1.taille=2;
-
-//   coord.colonne = 0;
-//   printf("\nChemin:");
-//   afficherChemin(ch1);
-//   printf("\nverification chemin, 1ere coordonnee: %d", verifierChemin(ch1,lab1,4,4,coord));
-//   printf("\nvaleur attendue: 0\n");
-
-//   coords[0]=coord;
-
-//   coord.colonne =2;
-//   coords[1]=coord;
-//   ch1.taille=2;
-
-//   coord.colonne=0;
-//   printf("\nChemin:");
-//   afficherChemin(ch1);
-//   printf("\nverification chemin, coordonnees non adjacentes: %d", verifierChemin(ch1,lab1,4,4,coord));
-//   printf("\nvaleur attendue: 0\n");
+  // coord.ligne=3;
+  // coord.colonne=0;
+  // coords[3]=coord;
 
   
-//   coords[0]=coord;
-//   coord.ligne=1;
-//   coords[1]=coord;
-  
-//   ch1.taille=2;
+  // chemin_t ch1;
+  // ch1.coordonnees=coords;
+  // ch1.taille=4;
 
-//   coord.ligne=0;
-//   printf("\nChemin:");
-//   afficherChemin(ch = mah1);
-//   printf("\nverifch = macation chemin, mur: %d", verifierChemin(ch1,lab1,4,4,coord));
-//   printf("\nvaleuch = ma attendue: 0\n");
+  // coord.ligne=0;
+  // coord.colonne=0;
+
+  // printf("\nTests chemins sur la matrice:\n");
+  // afficherMatrice(lab1,4,4);
+  // printf("\nChemin:");
+  // afficherChemin(ch1);
+  // printf("\nverification chemin valide: %d", verifierChemin(ch1,lab1,4,4,coord));
+  // printf("\nvaleur attendue: 1\n");
+  
+  // coord.colonne = 1;
+  // coords[0]=coord;
+
+  // coord.colonne = 2;
+  // coords[1]=coord;
+  // ch1.taille=2;
+
+  // coord.colonne = 0;
+  // printf("\nChemin:");
+  // afficherChemin(ch1);
+  // printf("\nverification chemin, 1ere coordonnee: %d", verifierChemin(ch1,lab1,4,4,coord));
+  // printf("\nvaleur attendue: 0\n");
+
+  // coords[0]=coord;
+
+  // coord.colonne =2;
+  // coords[1]=coord;
+  // ch1.taille=2;
+
+  // coord.colonne=0;
+  // printf("\nChemin:");
+  // afficherChemin(ch1);
+  // printf("\nverification chemin, coordonnees non adjacentes: %d", verifierChemin(ch1,lab1,4,4,coord));
+  // printf("\nvaleur attendue: 0\n");
+
+  
+  // coords[0]=coord;
+  // coord.ligne=1;
+  // coords[1]=coord;
+  
+  // ch1.taille=2;
+
+  // coord.ligne=0;
+  // printf("\nChemin:");
+  // afficherChemin(ch1);
+  // printf("\nverifc = macation chemin, mur: %d", verifierChemin(ch1,lab1,4,4,coord));
+  // printf("\nvaleur = ma attendue: 0\n");
 
 //  /***************ch = ma******************************Test résolution labyrinthe*****************************************************/
 
@@ -142,15 +143,65 @@ int main(){
 
 //generation aléatoire
   coordonnee_t depart = {0,0}; 
-  labyrinthe lab = genererLabyrinthe(LIGNES,COLLONNES,TEMP);
-  labyrinthe M2_1 = allouerMatrice(LIGNES,COLLONNES);
+  //labyrinthe lab = genererLabyrinthe(LIGNES,COLLONNES,TEMP);
+  labyrinthe lab = allouerMatrice(LIGNES,COLLONNES);
+  for(int i=0;i<LIGNES;i++){
+    for(int j=0;j<LIGNES;j++){
+      lab[i][j] = 0;
+    }
+  }
+
+  lab[3][1] = 2;
+  labyrinthe M2 = allouerMatrice(LIGNES,COLLONNES);
   afficherMatrice(lab,LIGNES,COLLONNES);
-  chemin_t test = plusCourtCheminDynamique(lab,M2_1,LIGNES,COLLONNES,depart);
-  printf("chemin:");
-  afficherChemin(test);
-  printf("chemin valide : %d\n",verifierChemin(test,lab,LIGNES,COLLONNES,depart));
-  printf("%d,%d",LIGNES,COLLONNES);
-  //free(test.coordonnees);
+  printf("\nTest tout plus cours chemin:\n");
+  chemin_t *chs = tousPlusCourtsChemins(lab,M2,LIGNES,COLLONNES,depart);
+  printf("chemins :\n");
+  int i=0;
+  while(i<LIGNES*COLLONNES){
+    printf("%d->",i);
+    afficherChemin(chs[i]);
+    free(chs[i].coordonnees);
+    i++;
+  }free(chs);
+
+  
+//   chemin_t ch1;
+//   chemin_t ch2;
+
+//   ch1.coordonnees = malloc(4*sizeof(coordonnee_t));
+
+//   ch1.taille = 4;
+//   ch1.coordonnees[0].ligne = 1;
+//   ch1.coordonnees[0].colonne = 0;
+//   ch1.coordonnees[1].colonne = 1;
+//   ch1.coordonnees[1].ligne =4;
+//   ch1.coordonnees[2].ligne = 2;
+//   ch1.coordonnees[2].colonne = 5;
+//   ch1.coordonnees[3].ligne = 8;
+//   ch1.coordonnees[3].colonne = 6;
+//   copier_chemin(ch1,&ch2,ch1.taille);
+
+//   cheminPile_t pile;
+//   init_pile_ch(&pile);
+//   empiler_ch(&pile,ch1);
+//   empiler_ch(&pile,ch2);
+//   for(int i=pile.queue;i<pile.tete-1;i++){
+//     afficherChemin(pile.pile[i]);
+//   }
+
+//   chemin_t ch3;
+//   copier_chemin(depiler_ch(&pile),&ch3,ch1.taille);
+
+// printf("pile(tete:%d,queue:%d):\n",pile.tete,pile.queue);
+// for(int i=pile.queue;i<pile.tete-1;i++){
+//     afficherChemin(pile.pile[i]);
+//   }
+// printf("pile(tete:%d,queue:%d):\n",pile.tete,pile.queue);
+// printf("chemin 3:\n");
+// afficherChemin(ch3);
+  
+
 
 
 
